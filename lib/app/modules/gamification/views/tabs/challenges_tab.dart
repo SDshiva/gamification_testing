@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../localization/localization_keys.dart';
 import '../../controllers/gamification_controller.dart';
-import '../../../home/widgets/challenge_card.dart';
+import '../../widgets/challenge_card.dart';
 
 class ChallengesTab extends StatelessWidget {
   final GamificationController controller;
@@ -33,18 +34,21 @@ class ChallengesTab extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: _buildQuickStat('🎯', 'Active',
+                child: _buildQuickStat('🎯', LocalizationKeys.active.tr,
                     '${controller.activeChallenges.length}', Colors.blue),
               ),
               Container(width: 1, height: 30, color: Colors.grey[300]),
               Expanded(
-                child: _buildQuickStat('✅', 'Completed',
+                child: _buildQuickStat('✅', LocalizationKeys.completed.tr,
                     '${controller.completedChallenges.length}', Colors.green),
               ),
               Container(width: 1, height: 30, color: Colors.grey[300]),
               Expanded(
-                child:
-                    _buildQuickStat('⭐', 'Points Today', '65', Colors.orange),
+                child: _buildQuickStat(
+                    '⭐',
+                    '${LocalizationKeys.points.tr} ${LocalizationKeys.today.tr}',
+                    '65',
+                    Colors.orange),
               ),
             ],
           ),
@@ -58,8 +62,8 @@ class ChallengesTab extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.4,
               child: _buildEmptyState(
                 Icons.emoji_events,
-                'No Active Challenges',
-                'New challenges will appear here',
+                LocalizationKeys.noChallenges.tr,
+                LocalizationKeys.newChallengesHere.tr,
               ),
             );
           }

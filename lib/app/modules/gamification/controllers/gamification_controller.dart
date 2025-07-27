@@ -7,8 +7,12 @@ import '../../../data/models/leaderboard_model.dart';
 import '../../../data/models/user_model.dart';
 
 class GamificationController extends GetxController {
-  final GamificationService _gamificationService =
-      Get.put(GamificationService());
+  // Lazy initialization of service
+  GamificationService? _gamificationService;
+  GamificationService get gamificationService {
+    _gamificationService ??= Get.put(GamificationService());
+    return _gamificationService!;
+  }
 
   // Direct reactive data - no need for double getters
   final Rx<UserModel?> currentUser = Rx<UserModel?>(null);
@@ -18,23 +22,45 @@ class GamificationController extends GetxController {
   final RxList<LeaderboardEntry> leaderboard = <LeaderboardEntry>[].obs;
 
   final RxInt selectedTabIndex = 0.obs;
+  final RxBool isLoading = true.obs;
 
   @override
   void onInit() {
     super.onInit();
-    _initializeData();
+    // Start with minimal loading state, then load data asynchronously
+    _initializeDataAsync();
   }
 
-  void _initializeData() {
-    // Initialize data directly in controller
-    _initializeDemoUser();
+  Future<void> _initializeDataAsync() async {
+    // Show loading state immediately
+    isLoading.value = true;
+
+    // Initialize minimal user data first (most important for UI)
+    await _initializeDemoUserAsync();
+
+    // Load other data progressively in the background
+    _loadDataProgressively();
+  }
+
+  void _loadDataProgressively() async {
+    // Load achievements first (usually viewed first)
+    await Future.delayed(Duration.zero); // Allow UI to render
     _initializeDemoAchievements();
+
+    await Future.delayed(Duration.zero);
     _initializeDemoBadges();
+
+    await Future.delayed(Duration.zero);
     _initializeDemoChallenges();
+
+    await Future.delayed(Duration.zero);
     _initializeDemoLeaderboard();
+
+    // Mark loading as complete
+    isLoading.value = false;
   }
 
-  void _initializeDemoUser() {
+  Future<void> _initializeDemoUserAsync() async {
     currentUser.value = UserModel(
       id: 'user_1',
       name: 'Demo User',
@@ -254,20 +280,20 @@ class GamificationController extends GetxController {
 
   // Gamification actions - delegate business logic to service
   Future<void> simulateActivity() async {
-    await _gamificationService.simulateActivity();
+    await gamificationService.simulateActivity();
   }
 
   Future<void> addPoints(int points, {String? reason}) async {
-    await _gamificationService.addPoints(points, reason: reason);
+    await gamificationService.addPoints(points, reason: reason);
   }
 
   Future<void> completeChallenge(String challengeId) async {
-    await _gamificationService.completeChallenge(challengeId);
+    await gamificationService.completeChallenge(challengeId);
   }
 
   Future<void> simulateChallengeProgress(
       String challengeId, int progress) async {
-    await _gamificationService.simulateChallengeProgress(challengeId, progress);
+    await gamificationService.simulateChallengeProgress(challengeId, progress);
   }
 
   // Filter methods

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../../../localization/localization_keys.dart';
 import '../../controllers/gamification_controller.dart';
-import '../../../home/widgets/badge_card.dart';
+import '../../widgets/badge_card.dart';
 
 class BadgesTab extends StatelessWidget {
   final GamificationController controller;
@@ -40,10 +42,12 @@ class BadgesTab extends StatelessWidget {
                   indicatorSize: TabBarIndicatorSize.label,
                   labelStyle: TextStyle(fontWeight: FontWeight.bold),
                   tabs: [
-                    Tab(text: 'Earned (${controller.earnedBadges.length})'),
                     Tab(
                         text:
-                            'Available (${controller.availableBadges.length})'),
+                            '${LocalizationKeys.earned.tr} (${controller.earnedBadges.length})'),
+                    Tab(
+                        text:
+                            '${LocalizationKeys.available.tr} (${controller.availableBadges.length})'),
                   ],
                 ),
                 Container(
@@ -69,8 +73,12 @@ class BadgesTab extends StatelessWidget {
     if (badges.isEmpty) {
       return _buildEmptyState(
         isEarned ? Icons.workspace_premium : Icons.check_circle,
-        isEarned ? 'No badges earned yet' : 'All badges earned!',
-        isEarned ? 'Complete achievements to earn badges' : 'Congratulations!',
+        isEarned
+            ? LocalizationKeys.noBadgesEarned.tr
+            : LocalizationKeys.allBadgesEarned.tr,
+        isEarned
+            ? LocalizationKeys.completeAchievementsBadges.tr
+            : LocalizationKeys.congratulations.tr,
       );
     }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../../../localization/localization_keys.dart';
 import '../../controllers/gamification_controller.dart';
-import '../../../home/widgets/achievement_card.dart';
+import '../../widgets/achievement_card.dart';
 
 class AchievementsTab extends StatelessWidget {
   final GamificationController controller;
@@ -42,10 +44,10 @@ class AchievementsTab extends StatelessWidget {
                   tabs: [
                     Tab(
                         text:
-                            'Unlocked (${controller.unlockedAchievements.length})'),
+                            '${LocalizationKeys.unlocked.tr} (${controller.unlockedAchievements.length})'),
                     Tab(
                         text:
-                            'Locked (${controller.lockedAchievements.length})'),
+                            '${LocalizationKeys.locked.tr} (${controller.lockedAchievements.length})'),
                   ],
                 ),
                 Container(
@@ -74,11 +76,11 @@ class AchievementsTab extends StatelessWidget {
       return _buildEmptyState(
         isUnlocked ? Icons.military_tech : Icons.lock,
         isUnlocked
-            ? 'No achievements unlocked yet'
-            : 'All achievements unlocked!',
+            ? LocalizationKeys.noAchievementsUnlocked.tr
+            : LocalizationKeys.allAchievementsUnlocked.tr,
         isUnlocked
-            ? 'Complete challenges to unlock achievements'
-            : 'Great job!',
+            ? LocalizationKeys.completeChallengesUnlock.tr
+            : LocalizationKeys.greatJob.tr,
       );
     }
 

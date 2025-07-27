@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/gamification_controller.dart';
-import '../../../home/widgets/leaderboard_card.dart';
+import '../../widgets/leaderboard_card.dart';
 
 class LeaderboardTab extends StatelessWidget {
   final GamificationController controller;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../localization/localization_keys.dart';
 import '../controllers/gamification_controller.dart';
 import 'tabs/challenges_tab.dart';
 import 'tabs/achievements_tab.dart';
@@ -7,7 +8,7 @@ import 'tabs/badges_tab.dart';
 import 'tabs/leaderboard_tab.dart';
 import '../widgets/mobile_tab_button.dart';
 import '../widgets/quick_actions_bottom_sheet.dart';
-import '../../home/widgets/user_profile_card.dart';
+import '../widgets/user_profile_card.dart';
 
 class GamificationView extends GetView<GamificationController> {
   const GamificationView({super.key});
@@ -57,7 +58,7 @@ class GamificationView extends GetView<GamificationController> {
                       children: [
                         Expanded(
                           child: MobileTabButton(
-                            title: 'Challenges',
+                            title: LocalizationKeys.challenges.tr,
                             outlinedIcon: Icons.emoji_events_outlined,
                             filledIcon: Icons.emoji_events,
                             index: 0,
@@ -67,7 +68,7 @@ class GamificationView extends GetView<GamificationController> {
                         ),
                         Expanded(
                           child: MobileTabButton(
-                            title: 'Achievements',
+                            title: LocalizationKeys.achievements.tr,
                             outlinedIcon: Icons.military_tech_outlined,
                             filledIcon: Icons.military_tech,
                             index: 1,
@@ -77,7 +78,7 @@ class GamificationView extends GetView<GamificationController> {
                         ),
                         Expanded(
                           child: MobileTabButton(
-                            title: 'Badges',
+                            title: LocalizationKeys.badges.tr,
                             outlinedIcon: Icons.workspace_premium_outlined,
                             filledIcon: Icons.workspace_premium,
                             index: 2,
@@ -87,7 +88,7 @@ class GamificationView extends GetView<GamificationController> {
                         ),
                         Expanded(
                           child: MobileTabButton(
-                            title: 'Leaderboard',
+                            title: LocalizationKeys.leaderboard.tr,
                             outlinedIcon: Icons.leaderboard_outlined,
                             filledIcon: Icons.leaderboard,
                             index: 3,
@@ -100,7 +101,7 @@ class GamificationView extends GetView<GamificationController> {
               ),
             ),
 
-            // Content Area - Now scrollable
+            // Content Area - Now scrollable with loading state
             SliverToBoxAdapter(
               child: Container(
                 constraints: BoxConstraints(
@@ -108,6 +109,11 @@ class GamificationView extends GetView<GamificationController> {
                       screenHeight * 0.6, // Ensure minimum height for content
                 ),
                 child: Obx(() {
+                  // Show loading indicator while data is being loaded
+                  if (controller.isLoading.value) {
+                    return _buildLoadingSkeleton();
+                  }
+
                   switch (controller.selectedTabIndex.value) {
                     case 0:
                       return ChallengesTab(controller: controller);
@@ -134,7 +140,7 @@ class GamificationView extends GetView<GamificationController> {
               onPressed: () =>
                   QuickActionsBottomSheet.show(context, controller),
               icon: Icon(Icons.flash_on),
-              label: Text('Quick Actions'),
+              label: Text(LocalizationKeys.quickActions.tr),
               backgroundColor: Theme.of(context).primaryColor,
               foregroundColor: Colors.white,
             );
@@ -147,6 +153,34 @@ class GamificationView extends GetView<GamificationController> {
             );
         }
       }),
+    );
+  }
+
+  Widget _buildLoadingSkeleton() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          // Loading shimmer cards
+          for (int i = 0; i < 3; i++)
+            Container(
+              margin: EdgeInsets.only(bottom: 16),
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(Get.context!).primaryColor,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

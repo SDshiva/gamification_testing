@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/home_controller.dart';
+import '../../../routes/app_pages.dart';
+import '../../../localization/localization_keys.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -11,7 +13,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gamification Demo'),
+        title: Text(LocalizationKeys.appName.tr),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
@@ -29,7 +31,7 @@ class HomeView extends GetView<HomeController> {
               ),
               SizedBox(height: 24),
               Text(
-                'Welcome to Gamification!',
+                LocalizationKeys.welcomeTitle.tr,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -37,15 +39,26 @@ class HomeView extends GetView<HomeController> {
               ),
               SizedBox(height: 16),
               Text(
-                'Experience achievements, badges, challenges,\nand compete on the leaderboard!',
+                LocalizationKeys.welcomeSubtitle.tr,
                 style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 32),
               ElevatedButton.icon(
-                onPressed: () => Get.toNamed('/gamification'),
+                onPressed: () async {
+                  // Show immediate visual feedback
+                  Get.snackbar(
+                    LocalizationKeys.loading.tr,
+                    LocalizationKeys.preparingExperience.tr,
+                    duration: Duration(milliseconds: 500),
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+
+                  // Navigate with optimized route
+                  Get.toNamed(Routes.GAMIFICATION);
+                },
                 icon: Icon(Icons.play_arrow),
-                label: Text('Start Gamification'),
+                label: Text(LocalizationKeys.startGamification.tr),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).primaryColor,
                   foregroundColor: Colors.white,
@@ -60,13 +73,13 @@ class HomeView extends GetView<HomeController> {
               OutlinedButton.icon(
                 onPressed: () {
                   Get.snackbar(
-                    'Quick Demo',
-                    'This would show a quick tutorial of the gamification features',
+                    LocalizationKeys.quickDemo.tr,
+                    LocalizationKeys.tutorialMessage.tr,
                     snackPosition: SnackPosition.BOTTOM,
                   );
                 },
                 icon: Icon(Icons.help_outline),
-                label: Text('How it Works'),
+                label: Text(LocalizationKeys.howItWorks.tr),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 ),
