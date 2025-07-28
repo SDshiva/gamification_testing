@@ -12,56 +12,82 @@ class LeaderboardTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Column(
-      children: [
-        // Top 3 Podium
-        Container(
-          margin: EdgeInsets.all(screenWidth * 0.04),
-          padding: EdgeInsets.all(screenWidth * 0.05),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.amber[100] ?? Colors.amber.shade100,
-                Colors.amber[50] ?? Colors.amber.shade50
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: _buildPodium(),
-        ),
+    return Obx(() {
+      // Show loading state if leaderboard content is not loaded yet
+      if (!controller.leaderboardLoaded.value) {
+        return _buildLoadingState();
+      }
 
-        // Full Leaderboard
-        Obx(() {
-          final leaderboard = controller.leaderboard;
-          if (leaderboard.isEmpty) {
-            return SizedBox(
-              height: MediaQuery.of(context).size.height * 0.4,
-              child: _buildEmptyState(
-                Icons.leaderboard,
-                'No leaderboard data',
-                'Rankings will appear here',
+      return Column(
+        children: [
+          // Top 3 Podium
+          Container(
+            margin: EdgeInsets.all(screenWidth * 0.04),
+            padding: EdgeInsets.all(screenWidth * 0.05),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.amber[100] ?? Colors.amber.shade100,
+                  Colors.amber[50] ?? Colors.amber.shade50
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            );
-          }
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: _buildPodium(),
+          ),
 
-          return Column(
-            children: leaderboard.map((entry) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                child: LeaderboardCard(
-                  entry: entry,
-                  onTap: () => _showUserProfile(context, entry),
+          // Full Leaderboard
+          Obx(() {
+            final leaderboard = controller.leaderboard;
+            if (leaderboard.isEmpty) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.4,
+                child: _buildEmptyState(
+                  Icons.leaderboard,
+                  'No leaderboard data',
+                  'Rankings will appear here',
                 ),
               );
-            }).toList(),
-          );
-        }),
+            }
 
-        // Add some bottom padding for FAB
-        SizedBox(height: 100),
-      ],
+            return Column(
+              children: leaderboard.map((entry) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                  child: LeaderboardCard(
+                    entry: entry,
+                    onTap: () => _showUserProfile(context, entry),
+                  ),
+                );
+              }).toList(),
+            );
+          }),
+
+          // Add some bottom padding for FAB
+          SizedBox(height: 100),
+        ],
+      );
+    });
+  }
+
+  Widget _buildLoadingState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text(
+              'Loading leaderboard...',
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

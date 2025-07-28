@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../../../data/services/gamification_service.dart';
+import '../services/gamification_service.dart';
 import '../../../data/models/challenge_model.dart';
 import '../../../data/models/achievement_model.dart';
 import '../../../data/models/badge_model.dart';
@@ -24,11 +24,22 @@ class GamificationController extends GetxController {
   final RxInt selectedTabIndex = 0.obs;
   final RxBool isLoading = true.obs;
 
+  // Track which tabs have been loaded to avoid reloading
+  final RxBool challengesLoaded = false.obs;
+  final RxBool achievementsLoaded = false.obs;
+  final RxBool badgesLoaded = false.obs;
+  final RxBool leaderboardLoaded = false.obs;
+
   @override
   void onInit() {
     super.onInit();
     // Start with minimal loading state, then load data asynchronously
     _initializeDataAsync();
+
+    // Listen to tab changes to load content lazily
+    selectedTabIndex.listen((tabIndex) {
+      _loadTabContent(tabIndex);
+    });
   }
 
   Future<void> _initializeDataAsync() async {
@@ -38,26 +49,69 @@ class GamificationController extends GetxController {
     // Initialize minimal user data first (most important for UI)
     await _initializeDemoUserAsync();
 
-    // Load other data progressively in the background
-    _loadDataProgressively();
+    // Load only challenges tab content initially (default tab)
+    await _loadChallengesContent();
+
+    // Mark loading as complete for initial load
+    isLoading.value = false;
   }
 
-  void _loadDataProgressively() async {
-    // Load achievements first (usually viewed first)
-    await Future.delayed(Duration.zero); // Allow UI to render
-    _initializeDemoAchievements();
+  // Lazy loading method for tab content
+  void _loadTabContent(int tabIndex) {
+    switch (tabIndex) {
+      case 0: // Challenges tab
+        if (!challengesLoaded.value) {
+          _loadChallengesContent();
+        }
+        break;
+      case 1: // Achievements tab
+        if (!achievementsLoaded.value) {
+          _loadAchievementsContent();
+        }
+        break;
+      case 2: // Badges tab
+        if (!badgesLoaded.value) {
+          _loadBadgesContent();
+        }
+        break;
+      case 3: // Leaderboard tab
+        if (!leaderboardLoaded.value) {
+          _loadLeaderboardContent();
+        }
+        break;
+    }
+  }
 
-    await Future.delayed(Duration.zero);
-    _initializeDemoBadges();
+  Future<void> _loadChallengesContent() async {
+    if (challengesLoaded.value) return;
 
-    await Future.delayed(Duration.zero);
+    await Future.delayed(Duration(milliseconds: 100)); // Simulate loading
     _initializeDemoChallenges();
+    challengesLoaded.value = true;
+  }
 
-    await Future.delayed(Duration.zero);
+  Future<void> _loadAchievementsContent() async {
+    if (achievementsLoaded.value) return;
+
+    await Future.delayed(Duration(milliseconds: 100)); // Simulate loading
+    _initializeDemoAchievements();
+    achievementsLoaded.value = true;
+  }
+
+  Future<void> _loadBadgesContent() async {
+    if (badgesLoaded.value) return;
+
+    await Future.delayed(Duration(milliseconds: 100)); // Simulate loading
+    _initializeDemoBadges();
+    badgesLoaded.value = true;
+  }
+
+  Future<void> _loadLeaderboardContent() async {
+    if (leaderboardLoaded.value) return;
+
+    await Future.delayed(Duration(milliseconds: 100)); // Simulate loading
     _initializeDemoLeaderboard();
-
-    // Mark loading as complete
-    isLoading.value = false;
+    leaderboardLoaded.value = true;
   }
 
   Future<void> _initializeDemoUserAsync() async {
@@ -276,6 +330,7 @@ class GamificationController extends GetxController {
 
   void changeTab(int index) {
     selectedTabIndex.value = index;
+    // Content loading will be triggered by the listener
   }
 
   // Gamification actions - delegate business logic to service

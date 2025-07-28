@@ -14,58 +14,84 @@ class BadgesTab extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Column(
-      children: [
-        Container(
-          margin:
-              EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: DefaultTabController(
-            length: 2,
-            child: Column(
-              children: [
-                TabBar(
-                  labelColor: Theme.of(context).primaryColor,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: Theme.of(context).primaryColor,
-                  indicatorWeight: 3,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                  tabs: [
-                    Tab(
-                        text:
-                            '${LocalizationKeys.earned.tr} (${controller.earnedBadges.length})'),
-                    Tab(
-                        text:
-                            '${LocalizationKeys.available.tr} (${controller.availableBadges.length})'),
-                  ],
-                ),
-                Container(
-                  height:
-                      screenHeight * 0.5, // Give fixed height for TabBarView
-                  child: TabBarView(
-                    children: [
-                      _buildBadgesGrid(controller.earnedBadges, true),
-                      _buildBadgesGrid(controller.availableBadges, false),
-                    ],
-                  ),
+    return Obx(() {
+      // Show loading state if badges content is not loaded yet
+      if (!controller.badgesLoaded.value) {
+        return _buildLoadingState();
+      }
+
+      return Column(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.04, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
+            child: DefaultTabController(
+              length: 2,
+              child: Column(
+                children: [
+                  TabBar(
+                    labelColor: Theme.of(context).primaryColor,
+                    unselectedLabelColor: Colors.grey,
+                    indicatorColor: Theme.of(context).primaryColor,
+                    indicatorWeight: 3,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    tabs: [
+                      Tab(
+                          text:
+                              '${LocalizationKeys.earned.tr} (${controller.earnedBadges.length})'),
+                      Tab(
+                          text:
+                              '${LocalizationKeys.available.tr} (${controller.availableBadges.length})'),
+                    ],
+                  ),
+                  Container(
+                    height:
+                        screenHeight * 0.5, // Give fixed height for TabBarView
+                    child: TabBarView(
+                      children: [
+                        _buildBadgesGrid(controller.earnedBadges, true),
+                        _buildBadgesGrid(controller.availableBadges, false),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
+          SizedBox(height: 100), // Bottom padding for FAB
+        ],
+      );
+    });
+  }
+
+  Widget _buildLoadingState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text(
+              'Loading badges...',
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+          ],
         ),
-        SizedBox(height: 100), // Bottom padding for FAB
-      ],
+      ),
     );
   }
 

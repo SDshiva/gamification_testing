@@ -46,14 +46,6 @@ class HomeView extends GetView<HomeController> {
               SizedBox(height: 32),
               ElevatedButton.icon(
                 onPressed: () async {
-                  // Show immediate visual feedback
-                  Get.snackbar(
-                    LocalizationKeys.loading.tr,
-                    LocalizationKeys.preparingExperience.tr,
-                    duration: Duration(milliseconds: 500),
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-
                   // Navigate with optimized route
                   Get.toNamed(Routes.GAMIFICATION);
                 },
