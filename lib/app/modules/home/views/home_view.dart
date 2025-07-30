@@ -76,6 +76,17 @@ class HomeView extends GetView<HomeController> {
                   padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 ),
               ),
+              SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: () {
+                  Get.toNamed(Routes.CHARTS);
+                },
+                icon: Icon(Icons.bar_chart),
+                label: Text('Test Charts'),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                ),
+              ),
             ],
           ),
         ),

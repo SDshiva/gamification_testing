@@ -5,6 +5,8 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/gamification/bindings/gamification_binding.dart';
 import '../modules/gamification/views/gamification_view.dart';
+import '../modules/charts/bindings/charts_binding.dart';
+import '../modules/charts/views/charts_view.dart';
 
 part 'app_routes.dart';
 
@@ -41,6 +43,14 @@ class AppPages {
       curve: Curves.elasticOut, // Bouncy animation curve
       // Pre-load the binding to reduce initialization time
       preventDuplicates: true,
+    ),
+    GetPage(
+      name: _Paths.CHARTS,
+      page: () => const ChartsView(),
+      binding: ChartsBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: Duration(milliseconds: 600),
+      curve: Curves.easeInOut,
     ),
   ];
 }
